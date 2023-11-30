@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма с запросом на сервер</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        h2 {
+            text-align: left;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top:100px;
+        }
+
+        label {
+            display: block;
+            color:#a1a1a1;
+            margin-bottom: 10px;
+        }
+
+        .left {
+            float:left;
+            margin-right:15px;
+        }
+
+        input[type="text"], input[type="email"], input[type="lastname"], input[type="password"], select {
+            padding: 5px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            margin-bottom: 10px;
+            width:350px;
+        }
+
+        input[type="checkbox"] {
+            margin: 7px;
+        }
+
+        .btn {
+            background: #F9D9BE;
+            color: #000;
+            height: 45px;
+            width: 130px;
+            border:none;
+        }
+
+        input:invalid {
+            border-color: red;
+        }
+
+    </style>
+</head>
+<body>
+
+<form id="registrationForm" onsubmit="submitForm(event)">
+    <h2>PERSONAL INFORMATION</h2>
+    <div class="left">
+        <label for="name">FIRST NAME*</label>
+        <input type="text" id="name" name="name" required placeholder="Введите имя">
+    </div>
+
+    <div class="left">
+        <label for="last_name">LAST NAME*</label>
+        <input type="text" id="last_name" name="last_name" required placeholder="Введите фамилию">
+    </div>
+
+    <label for="email">EMAIL ADDRESS*</label>
+    <input type="email" id="email" name="email" required placeholder="Введите почту">
+
+    <label for="checkbox"><input type="checkbox" id="checkbox"> SIGN UP FOR NEWSLETTER</label>
+
+    <h2>LOGIN INFORMATION</h2>
+
+    <div class="left">
+        <label for="pass">PASSWORD<span class="req">*</span></label>
+        <input type="password" id="pass" name="pass" autocomplete="off" required placeholder="Введите пароль">
+    </div>
+
+    <div>
+        <label for="confirm_pass">CONFIRM PASSWORD<span class="req">*</span></label>
+        <input type="password" id="confirm_pass" name="confirm_pass" required autocomplete="off" placeholder="Подтвердите пароль">
+    </div>
+
+    <br>
+    <button class="btn">SUBMIT</button>
+
+    <!-- Добавленное поле для сообщения -->
+    <div id="message" style="display: none;"></div>
+</form>
+
+<script>
+    function submitForm(event) {
+        event.preventDefault();
+
+        const forma = {
+            first_name: document.getElementById('name').value,
+            last_name: document.getElementById('last_name').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('pass').value,
+            confirm_password: document.getElementById('confirm_pass').value,
+            checkbox: document.getElementById('checkbox').checked,
+        };
+
+        // Отправка данных на сервер
+        fetch('http://localhost:3000/submitForm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(forma),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Отображаем сообщение после успешной отправки
+            const messageElement = document.getElementById('message');
+            messageElement.innerHTML = 'Данные отправлены';
+            messageElement.style.display = 'block';
+
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+                location.reload();
+            }, 1000);
+        })
+        .catch(error => console.error('Ошибка:', error));
+    }
+</script>
+
+
+
+</body>
+</html>
